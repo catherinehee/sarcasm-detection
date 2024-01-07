@@ -43,7 +43,18 @@ After experimenting with several variations of the following hyperparameters, I 
 To assess the performance of the BERT model, I used the following metrics: 
  1. **Accuracy** = (TP + TN) / (TP + TN + FP + FN) 
  2. **F1-score** = 2 * (PR * RE) / (PR + RE)
+
 Loss was also calculated by default.
+
+|               | # of samples | Loss | F1 | Accuracy |
+| :---------------- | :------: | ----: | --:| --:|
+| Validation (eval) |   1431   | 0.375 |0.839|0.846|
+| Test           |   1431   | 0.334|0.860|0.866|
+
+<img src="https://github.com/catherinehee/sarcasm-detection/assets/111953841/b6fe10c5-ac14-4df3-8f80-4bc45cd2d9af" width=400>
+<img src="https://github.com/catherinehee/sarcasm-detection/assets/111953841/273e47d7-eeb0-432b-a2bb-0458471caeec" width=400>
+<img src="https://github.com/catherinehee/sarcasm-detection/assets/111953841/0881b7bd-c319-409f-8316-1e29f8e20dee" width=600>
+
 
 
 ## Discussion
