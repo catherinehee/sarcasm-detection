@@ -30,7 +30,7 @@ The **BertForSequenceClassification model** is the BERT model transformer with a
 
 To facilitate the training process, I utilized *HuggingFace’s Trainer API* to fine-tune a BertForSequenceClassification model. This tool helps compact several components of the training and evaluation process we learned in curriculum (e.g. it forgoes the need to explicitly call forward/backward pass, specify gradient descent details, lr scheduler, optimizer, etc.).
 
-Note: HuggingFace’s Trainer API sets default values for several components of the model’s training process, namely the AdamW optimizer, linear learning rate scheduler, clip gradient norm to default 1.0.
+Note: HuggingFace’s Trainer API sets default values for several components of the model’s training process, namely the AdamW optimizer, linear learning rate scheduler, clipping gradient norm to 1.0.
 
 After experimenting with several variations of the following hyperparameters, I achieved the best results with the following values:
 
@@ -48,28 +48,29 @@ Loss was also calculated by default.
 
 |               | # of samples | Loss | F1 | Accuracy |
 | :---------------- | :------: | ----: | --:| --:|
-| Validation (eval) |   1431   | 0.375 |0.839|0.846|
-| Test           |   1431   | 0.334|0.860|0.866|
+| Validation (eval) |   1431   | 0.340 |0.853|0.855|
+| Test           |   1431   | 0.311|0.862|0.864|
 
-<img src="https://github.com/catherinehee/sarcasm-detection/assets/111953841/b6fe10c5-ac14-4df3-8f80-4bc45cd2d9af" width=400>
+<img src="https://github.com/catherinehee/sarcasm-detection/assets/111953841/a360dd27-1bdf-4190-bad0-28280011b9a7" width=400>
 <img src="https://github.com/catherinehee/sarcasm-detection/assets/111953841/273e47d7-eeb0-432b-a2bb-0458471caeec" width=400>
-<img src="https://github.com/catherinehee/sarcasm-detection/assets/111953841/0881b7bd-c319-409f-8316-1e29f8e20dee" width=600>
-
+<img src="https://github.com/catherinehee/sarcasm-detection/assets/111953841/e554bd20-bfad-4e68-af0d-a5f6108fa5cf" width=600>
+(Blue for train/loss, Red for eval/loss)
 
 
 ## Discussion
 
-From a societal perspective, this project could yield several benefits. Sarcasm detection tools could assist modern attempts to reduce the dissemination of false information (from news headlines, in particular) and promote transparency in today’s society. 
+From a societal perspective, this project yields several benefits. Sarcasm detection tools could assist modern attempts to reduce the dissemination of false information (from news headlines, in particular) and promote transparency in today’s society. 
 
-Sentiment analysis is also a common NLP task; sarcasm presents a major obstacle in said task, due to its inherent ambiguity and linguistic nature of communicating the opposite of what is said. Thus, sarcasm detection, a task that is difficult even among human interactions, would indicate major progress in understanding human language.
+In addition, sarcasm is a major obstacle to sentiment analysis, a common task in NLP, due to its inherent ambiguity, because sarcasm communicates the opposite of what is said. Thus, good model performance in sarcasm detection, a difficult task even among human interaction, would indicate major progress in understanding human language.
 
 One limitation to address is that the model has only been trained on headlines from two news sites, while there are many more news sources, whose affiliations, geographic belonging, and biases could affect the nature of its headlines. In addition, sarcasm isn’t limited to headlines–rather, it’s ubiquitous on many other platforms. 
 
-In future studies, I would like to see how this model performs on a bigger dataset from a wider distribution of sources. In addition, this project could be expanded to train on data from colloquial contexts (i.e. social media), where sarcasm is more commonly displayed. 
+In future studies, I would like to see how this model performs on a bigger dataset from (1) a wider distribution of news sources or (2) data from colloquial contexts (i.e. social media), where sarcasm is more commonly displayed. 
 
-In terms of implementation, it would also be interesting to observe how different architectures perform the task, like augmenting the BERT model with additional layers, or experimenting with other NLP techniques for text classification, like RNN/CNNs. 
+In terms of implementation, it would also be interesting to observe how different architectures fulfill the task, like augmenting the BERT model with additional layers or experimenting with other NLP techniques for text classification, like RNN/CNNs. 
 
 ## Citations
+
 1. Misra, Rishabh and Prahal Arora. "Sarcasm Detection using News Headlines Dataset." AI Open (2023).
 
 2. Misra, Rishabh and Jigyasa Grover. "Sculpting Data for ML: The first act of Machine Learning." ISBN 9798585463570 (2021).
