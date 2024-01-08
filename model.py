@@ -38,8 +38,8 @@ df = df.rename(columns={"is_sarcastic": "label", "headline": "headline"})
 train_df = df.sample(frac=0.9, random_state=328) # 90%
 test_df = df.drop(train_df.index)
 # 90-10 Train/Val split
-val_df = train_df.sample(frac=0.1, random_state=290)
-train_df = train_df.drop(val_df.index)
+val_df = test_df.sample(frac=0.5, random_state=290)
+test_df = test_df.drop(val_df.index)
 
 # Load Tokenizer
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased", lowercase=True)
@@ -65,12 +65,12 @@ print('Max sentence length: ', max_len)
 
 # Tokenize each headline with BertTokenizer
 def get_features(data):
-  input_encodings= tokenizer(data["headline"], # Headline to encode
+    input_encodings= tokenizer(data["headline"], # Headline to encode
         add_special_tokens=True, # Add '[CLS]' and '[SEP]'
         max_length=max_len, 
         pad_to_max_length=True, # Pads to max_len 
         return_attention_mask=True) # Construct attention masks
-  return input_encodings
+    return input_encodings
 
 # Retrieving features from each dataset split (input_ids, attention_mask, label)
 train_data = train_ds.map(get_features)
@@ -87,7 +87,7 @@ BATCH_SIZE = 32
 LEARNING_RATE = 2e-5
 EPOCHS = 4
 '''
-Notable default values: 
+Notable default values in TrainingArguments: 
     optim=adamw_torch
     lr_scheduler_type="linear"
     warmup_steps = 0
@@ -96,11 +96,8 @@ Notable default values:
 
 args = TrainingArguments(
     output_dir=output_dir,
-    save_strategy="steps", # save, evaluate, and log by steps
-    evaluation_strategy = "steps",
-    eval_steps=100,
-    logging_steps=100,
-    save_steps=500,
+    save_strategy="epoch", # save, evaluate, and log at the end of each epoch
+    evaluation_strategy = "epoch",
     save_total_limit=1, # Saves best checkpoint at end (based on accuracy)
 
     learning_rate=LEARNING_RATE,
@@ -110,14 +107,14 @@ args = TrainingArguments(
     
     weight_decay=0.01,
     load_best_model_at_end=True,
-    metric_for_best_model="accuracy",
+    metric_for_best_model="accuracy", 
     report_to="wandb"
 )
 
 # Compute accuracy metric to assess performance
 def compute_metrics(pred):
     acc_metric = evaluate.load("accuracy") # Load HF's metric for accuracy: Accuracy = (TP + TN) / (TP + TN + FP + FN)
-    f1_metric = evaluate.load("f1") # Load HF's metric for accuracy: Accuracy = (TP + TN) / (TP + TN + FP + FN)
+    f1_metric = evaluate.load("f1") # Load HF's metric for f1: F1 = 2 (PRECISION * RECALL) / (PRECISION + RECALL)
     logits, labels = pred # Get the loss and "logits" output by the model.
     predictions = np.argmax(logits, axis = 1)
     accuracy = acc_metric.compute(predictions=predictions, references=labels)["accuracy"]
@@ -136,14 +133,13 @@ trainer = Trainer(
     train_dataset=train_data, # Dataset to use for training 
     eval_dataset=validation_data, # Dataset to use for evaluation
     compute_metrics=compute_metrics, # Function used to assess evaluation
-    
 )
 
 trainer.train()
 
 
 # ----- 
-# Results / Evaluation
+# Results / Model Evaluation
 print("Validation set results:\n")
 val_results = trainer.evaluate()
 print(val_results)
